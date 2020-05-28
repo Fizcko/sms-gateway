@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+  backend:
+    image: fizcko/sms-gateway
+    restart: always
+    ports:
+      - 5000:5000
+    devices:
+      - "/dev/ttyUSB2:/dev/ttyUSB2"
+    depends_on:
+      - "db"
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: 88qpRR87pa78fff
+      MYSQL_DATABASE: smsd
+      GAMMU_DEVICE: /dev/ttyUSB2
+  db:
+    image: webhippie/mariadb
+    restart: always
+    volumes:
+      - /opt/mariadb:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: 88qpRR87pa78fff
+      MARIADB_DATABASE: smsd
+
