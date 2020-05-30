@@ -6,11 +6,22 @@ A 2.0 swagger documentation is provided at the root URL.
 
 All routes are protected by a Bearer authentication.
 
+# Table of Contents
+
+* [Requirements](#Requirements)
+* [Installation (docker-compose)](#Installation-(docker-compose))
+* [Run containers](#Run-containers)
+* [Environment Variables](#Environment-Variables)
+* [My setup](#My-setup)
+* [Screenshots](#Screenshots)
+
 ## Requirements
 
 This project require a `SQL` database (mySQL, MariaDB, ...).
 
 [A device supported by Gammu library](https://wammu.eu/phones/)
+
+A sim card to send and received SMS.
 
 ## Installation (docker-compose)
 
@@ -50,7 +61,6 @@ services:
 
 If you are not able to pull `mariadb` image on `arm64` you can change `mariadb` image to `webhippie/mariadb`
 
-
 # Run containers
 ```
 $ docker-compose up -d
@@ -79,6 +89,11 @@ $ docker-compose up -d
     default value   : "at"
     description     : Protocol which will be used to talk to your device
     more            : https://wammu.eu/docs/manual/config/index.html#option-Connection
+
+#### GAMMU_PIN
+    default value   : "1234"
+    description     : PIN for SIM card. If no pin on the SIM card leave default value
+    more            : https://wammu.eu/docs/manual/smsd/config.html#option-PIN
 
 #### GAMMU_DEBUG_LEVEL
     default value   : "0"
@@ -110,6 +125,10 @@ $ docker-compose up -d
     description     : Which algorithm to sign the JWT with
     more            : https://pyjwt.readthedocs.io/en/latest/algorithms.html
 
+#### JWT_ACCESS_TOKEN_EXPIRES
+    default value   : "900"
+    description     : How long (in ms) an access token should live before it expires. Can be set to 0 to disable expiration.
+
 #### API_USERNAME
     default value   : "admin"
     description     : User name used for connection to the rest API
@@ -128,3 +147,7 @@ $ docker-compose up -d
 [Raspberry Pi interface bridge](https://sixfab.com/product/raspberry-pi-3g-4glte-base-shield-v2/)
 
 [LTE Antenna](https://sixfab.com/product/lte-main-diversity-dual-u-fl-antenna-100mm/)
+
+# Screenshots
+
+![Swagger](screenshots/swagger.png)

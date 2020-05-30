@@ -14,7 +14,7 @@ login_post = server.api.model('Login Payload', {
     )
 })
 
-login_response = server.api.model('Login Response', {
+token_response = server.api.model('Token Response', {
     'access_token': fields.String(
         example='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
     )

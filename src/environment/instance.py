@@ -14,17 +14,17 @@ environment_config = {
 jwt_secret = os.environ.get("JWT_SECRET", "change-it")
 jwt_algorithm = os.environ.get("JWT_ALGORITHM", "HS256")
 jwt_access_token_expires = os.environ.get("JWT_ACCESS_TOKEN_EXPIRES", "900")
-jwt_refresh_token_expires = os.environ.get("JWT_REFRESH_TOKEN_EXPIRES", "900")
 
 jwt_config = {
     "secret": jwt_secret,
-    "algorithm": jwt_algorithm
+    "algorithm": jwt_algorithm,
+    "token_expires": int(jwt_access_token_expires) if jwt_access_token_expires.isnumeric() else 900
 }
 
 # DB config
 mysql_host = os.environ.get("MYSQL_HOST", "localhost")
-mysql_username = os.environ.get("MYSQL_USERNAME", "gammu")
-mysql_password = os.environ.get("MYSQL_PASSWORD", "gammu")
+mysql_username = os.environ.get("MYSQL_USERNAME", "root")
+mysql_password = os.environ.get("MYSQL_PASSWORD", "toor")
 mysql_database = os.environ.get("MYSQL_DATABASE", "smsd")
 
 database_config = {

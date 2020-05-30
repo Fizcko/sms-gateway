@@ -17,6 +17,7 @@ connection = ${GAMMU_DEVICE_CONNECTION}
 
 # SMSD configuration, see gammu-smsdrc(5)
 [smsd]
+PIN = ${GAMMU_PIN}
 Service = sql
 Driver = native_mysql
 Host = ${MYSQL_HOST}

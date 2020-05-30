@@ -28,8 +28,7 @@ class Server(object):
         self.app.config['JWT_SECRET_KEY'] = jwt_config["secret"]
         self.app.config['JWT_ALGORITHM'] = jwt_config["algorithm"]
         ## How long (in seconds) an access token should live before it expires
-        self.app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=900)
-        self.app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(seconds=900)
+        self.app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=jwt_config["token_expires"])
         # The key of the error message in a JSON error response
         self.app.config['JWT_ERROR_MESSAGE_KEY'] = "message"
 
