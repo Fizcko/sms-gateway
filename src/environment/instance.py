@@ -3,11 +3,26 @@ import os
 # Environment config
 port = os.environ.get("SERVER_PORT", "5000")
 ip = os.environ.get("SERVER_IP", "0.0.0.0")
+security = os.environ.get("API_SECURITY", "None")
+
+if security == 'Bearer':
+    require_bearer = True
+    require_basic = False
+elif security == 'Basic':
+    require_bearer = False
+    require_basic = True
+else:
+    security = []
+    require_bearer = False
+    require_basic = False
 
 environment_config = {
     "ip": ip,
     "port": port,
-    "swagger-url": "/"
+    "swagger-url": "/",
+    "security": security,
+    "require_bearer": require_bearer,
+    "require_basic": require_basic
 }
 
 # JWT config

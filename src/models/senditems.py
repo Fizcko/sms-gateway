@@ -1,4 +1,4 @@
-from flask_restplus import fields
+from flask_restx import fields
 from server.instance import server
 
 senditems_item = server.api.model('senditems item', {

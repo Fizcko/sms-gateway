@@ -1,11 +1,13 @@
 from flask import request
-from flask_restplus import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask_jwt_extended import ( jwt_required )
 from database.models import inbox
 from database.instance import db_session
 from server.instance import server
 from math import ceil
 from models.inbox import inbox_item, inbox_items
+from resources.decorators import ( required_bearerAuth, required_basicAuth )
+from environment.instance import environment_config
 
 api = server.api
 ns = api.namespace('Inbox', description='Inbox operations', path='/')
@@ -22,8 +24,8 @@ class Inbox(Resource):
     @api.doc(params={'after': {'description': 'Filter SMS received after a date', 'in': 'query', 'type': 'date'}})
     @api.doc(params={'sender': {'description': 'Filter SMS received from a number', 'in': 'query', 'type': 'string'}})
     @api.expect(pagination_arguments, validate=True)
-    @api.doc(security='Bearer')
-    @jwt_required
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
     @api.response(200, 'Success', inbox_items)
     def get(self):
         '''   Get all SMS located in the inbox'''
@@ -66,8 +68,8 @@ class InboxID(Resource):
 
     @ns.doc(params={'id': 'ID of a SMS to get'})
     @ns.doc(description='Get a SMS located in the inbox by his ID')
-    @api.doc(security='Bearer')
-    @jwt_required
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
     @api.response(200, 'Success', inbox_item)
     def get(self, id: int):
         '''   Get a SMS located in the inbox by his ID'''
@@ -80,8 +82,8 @@ class InboxID(Resource):
     @ns.doc(params={'id': 'ID of a SMS to delete'})
     @ns.doc(description='Delete a SMS located in the inbox')
     @ns.response(204, 'Success')
-    @api.doc(security='Bearer')
-    @jwt_required
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
     def delete(self, id: int):
         '''   Delete a SMS located in the inbox'''
         sms = inbox.query.filter_by(ID=id).first()

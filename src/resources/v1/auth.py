@@ -1,6 +1,9 @@
 from flask import request
-from flask_restplus import Resource
+from flask_restx import Resource
 from flask_jwt_extended import (create_access_token, get_jwt_identity, jwt_required)
+from resources.decorators import ( required_bearerAuth )
+from environment.instance import environment_config
+
 import os
 
 from server.instance import server
@@ -13,8 +16,9 @@ ns = api.namespace('Authentication', description='Authentication operations', pa
 class login(Resource):
 
     @ns.expect(login_post, validate=True)
-    @ns.doc(description='Get a token for requests')
+    @ns.doc(description='Get a bearer token for requests protected by a bearer Authentication')
     @api.response(200, 'Success', token_response)
+    @api.doc(security=[])
     def post(self):
         '''   Get a token for requests'''
         json_data = request.json
@@ -33,10 +37,9 @@ class login(Resource):
 @ns.route('/v1/refresh')
 class refresh(Resource):
 
-    @ns.doc(description='Get a new token for requests')
+    @ns.doc(description='Get a new bearer token for requests protected by a bearer Authentication')
     @api.response(200, 'Success', token_response)
-    @api.doc(security='Bearer')
-    @jwt_required
+    @required_bearerAuth(environment_config["require_bearer"])
     def get(self):
         '''   Get a token for requests'''
         current_user = get_jwt_identity()

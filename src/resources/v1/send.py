@@ -1,9 +1,11 @@
 from flask import request
-from flask_restplus import Resource
+from flask_restx import Resource
 from flask_jwt_extended import ( jwt_required )
 from server.instance import server
 from environment.instance import gammu_smsd_config
 from models.send import sms_post, send_result
+from resources.decorators import ( required_bearerAuth, required_basicAuth )
+from environment.instance import environment_config
 
 import gammu
 import gammu.smsd
@@ -18,8 +20,8 @@ smsd = gammu.smsd.SMSD(gammu_smsd_config['conf'])
 class SendSMS(Resource):
     @ns.expect(sms_post, validate=True)
     @ns.doc(description='Send a SMS')
-    @api.doc(security='Bearer')
-    @jwt_required
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
     @api.response(200, 'Success', send_result)
     def post(self):
         '''   Send a SMS'''

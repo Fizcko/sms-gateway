@@ -4,7 +4,7 @@ This REST API allow you to send and receive SMS using gammu-smsd.
 
 A 2.0 swagger documentation is provided at the root URL.
 
-All routes are protected by a Bearer authentication.
+All routes can be protected by an authentication methode (Basic, Bearer).
 
 # Table of Contents
 
@@ -128,6 +128,11 @@ $ docker-compose up -d
 #### JWT_ACCESS_TOKEN_EXPIRES
     default value   : "900"
     description     : How long (in ms) an access token should live before it expires. Can be set to 0 to disable expiration.
+
+#### API_SECURITY
+    default value   : "None"
+    allowed values  : "None" | "Bearer" | "Basic"
+    description     : Select the authentication methode for the routes of the Rest API
 
 #### API_USERNAME
     default value   : "admin"

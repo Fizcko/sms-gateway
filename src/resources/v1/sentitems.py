@@ -1,11 +1,13 @@
 from flask import request
-from flask_restplus import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask_jwt_extended import ( jwt_required )
 from database.models import sentitems
 from database.instance import db_session
 from server.instance import server
 from math import ceil
 from models.senditems import senditems_item, senditems_items
+from resources.decorators import ( required_bearerAuth, required_basicAuth )
+from environment.instance import environment_config
 
 api = server.api
 ns = api.namespace('Sent Items', description='Sent Items operations', path='/')
@@ -22,8 +24,8 @@ class SendItems(Resource):
     @api.doc(params={'after': {'description': 'Filter SMS send after a date', 'in': 'query', 'type': 'date'}})
     @api.doc(params={'destination': {'description': 'Filter SMS send from a number', 'in': 'query', 'type': 'string'}})
     @api.expect(pagination_arguments, validate=True)
-    @api.doc(security='Bearer')
-    @jwt_required
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
     @api.response(200, 'Success', senditems_items)
     def get(self):
         '''   Get all SMS located in the send items'''
@@ -66,8 +68,8 @@ class SendItemsID(Resource):
 
     @ns.doc(params={'id': 'ID of a SMS to get'})
     @ns.doc(description='Get a SMS located in the send items by his ID')
-    @api.doc(security='Bearer')
-    @jwt_required
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
     @api.response(200, 'Success', senditems_item)
     def get(self, id: int):
         '''   Get a SMS located in the send items by his ID'''
@@ -80,8 +82,8 @@ class SendItemsID(Resource):
     @ns.doc(params={'id': 'ID of a SMS to delete'})
     @ns.doc(description='Delete a SMS located in the send items')
     @ns.response(204, 'Success')
-    @api.doc(security='Bearer')
-    @jwt_required
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
     def delete(self, id: int):
         '''   Delete a SMS located in the send items'''
         sms = sentitems.query.filter_by(ID=id).first()

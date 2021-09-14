@@ -1,8 +1,10 @@
 from waitress import serve
 from flask import Flask
-from flask_restplus import Api, Resource, fields
+from flask_restx import Api, Resource, fields
 from flask_jwt_extended import (JWTManager)
+from flask_basicauth import BasicAuth
 
+import os
 import logging
 import datetime
 
@@ -32,21 +34,31 @@ class Server(object):
         # The key of the error message in a JSON error response
         self.app.config['JWT_ERROR_MESSAGE_KEY'] = "message"
 
+        # flask_basicauth
+        self.app.config['BASIC_AUTH_USERNAME'] = os.environ.get("API_USERNAME", "admin")
+        self.app.config['BASIC_AUTH_PASSWORD'] = os.environ.get("API_PASSWORD", "admin")
+
         authorizations = {
             'Bearer': {
                 'type': 'apiKey',
                 'in': 'header',
                 'name': 'Authorization',
                 'description': "Type in the *'Value'* input box below: **'Bearer XXX'**, where XXX is the token"
+            },
+            'Basic': {
+                'type': 'basic',
+                'in': 'header',
+                'name': 'Authorization'
             }
         }
 
         self.api = Api(self.app, 
-            version='1.0', 
+            version='1.0.9', 
             title='SMS Gateway',
             description='This REST API allow you to send and receive SMS', 
             doc = environment_config["swagger-url"],
-            authorizations=authorizations
+            authorizations=authorizations,
+            security=environment_config["security"]
         )
         
         self.jwt = JWTManager(self.app)

@@ -1,4 +1,4 @@
-from flask_restplus import fields
+from flask_restx import fields
 from server.instance import server
 
 inbox_item = server.api.model('inbox item', {

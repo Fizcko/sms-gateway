@@ -25,6 +25,7 @@ ENV JWT_SECRET "Change-this-secret-phrase"
 ENV JWT_ALGORITHM "HS256"
 ENV JWT_ACCESS_TOKEN_EXPIRES "900"
 
+ENV API_SECURITY "None"
 ENV API_USERNAME "admin"
 ENV API_PASSWORD "admin"
 
@@ -35,7 +36,7 @@ RUN apt-get update \
 		gammu=1.40.0-1 \
 		gammu-smsd=1.40.0-1 \
 		libgammu-dev=1.40.0-1 \
-		libmariadb-dev=1:10.3.22-0+deb10u1 \
+		libmariadb-dev \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* 
 
