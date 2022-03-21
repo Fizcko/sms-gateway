@@ -1,4 +1,4 @@
-waitress==2.0.0
+waitress==2.1.1
 flask==2.0.1
 flask-restx==0.5.1
 flask-jwt-extended==4.3.0
