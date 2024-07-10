@@ -29,10 +29,14 @@ ENV API_SECURITY "None"
 ENV API_USERNAME "admin"
 ENV API_PASSWORD "admin"
 
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 RUN apt-get update \
 	&& apt-get install -y \
 		python3 \
 		python3-pip \
+		python3-venv \
 		gammu=1.42.0-8 \
 		gammu-smsd=1.42.0-8 \
 		libgammu-dev=1.42.0-8 \
@@ -43,6 +47,7 @@ RUN apt-get update \
 COPY entrypoint.sh /usr/local/bin/
 COPY src/ /opt/sms_gateway/
 
-RUN pip3 install -r requirements.txt
+RUN python3 -m venv $VIRTUAL_ENV \
+	&& pip3 install -r requirements.txt
 
 CMD ["bash", "/usr/local/bin/entrypoint.sh"]
