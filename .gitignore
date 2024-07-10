@@ -1,4 +1,5 @@
 .env
+.venv
 gammu-smsdrc-win
 mysql.sql
 syslog

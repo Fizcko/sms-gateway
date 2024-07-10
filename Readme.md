@@ -31,35 +31,37 @@ Create a folder into the host for persistant data (SQL data)
 
 Create `docker-complose.yml` file then modify or add environment variables if necessary
 ```
+version: '3.3'
 services:
+  db:
+    image: mariadb:10.5
+    container_name: sms-gateway_db
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - /opt/mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=UP5yeFxRcvtMBzjdfNmT6p
+      - MYSQL_USER=sms-gateway
+      - MYSQL_PASSWORD=Bpj7hXNCextgnzSWckFybV
+      - MYSQL_DATABASE=smsd
   backend:
-    image: fizcko/sms-gateway
+    image: fizcko/sms-gateway:latest
+    container_name: sms-gateway_server
     restart: always
     ports:
       - 5000:5000
     devices:
-      - "/dev/ttyUSB2:/dev/ttyUSB2"
+      - "/dev/ttyUSB2:/dev/phone"
     depends_on:
       - "db"
     environment:
-      GAMMU_DEVICE: /dev/ttyUSB2
-      MYSQL_HOST: db
-      MYSQL_USERNAME: root
-      MYSQL_PASSWORD: 88qpRR87pa78fff
-      MYSQL_DATABASE: smsd
-  db:
-    image: mariadb
-    restart: always
-    volumes:
-      - /opt/mariadb:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: 88qpRR87pa78fff
-      MYSQL_DATABASE: smsd
+      - MYSQL_HOST=db
+      - MYSQL_USERNAME=sms-gateway
+      - MYSQL_PASSWORD=Bpj7hXNCextgnzSWckFybV
+      - MYSQL_DATABASE=smsd
+      - GAMMU_DEVICE=/dev/phone
 ```
-
-#### Linux\arm64
-
-If you are not able to pull `mariadb` image on `arm64` you can change `mariadb` image to `webhippie/mariadb`
 
 # Run containers
 ```

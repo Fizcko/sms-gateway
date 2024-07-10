@@ -53,7 +53,7 @@ class Server(object):
         }
 
         self.api = Api(self.app, 
-            version='1.0.9', 
+            version='2.0.0', 
             title='SMS Gateway',
             description='This REST API allow you to send and receive SMS', 
             doc = environment_config["swagger-url"],

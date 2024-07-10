@@ -1,5 +1,10 @@
 import os
 
+from dotenv import load_dotenv
+
+# Load .env settings
+load_dotenv()
+
 # Environment config
 port = os.environ.get("SERVER_PORT", "5000")
 ip = os.environ.get("SERVER_IP", "0.0.0.0")

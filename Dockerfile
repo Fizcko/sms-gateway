@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
@@ -33,9 +33,9 @@ RUN apt-get update \
 	&& apt-get install -y \
 		python3 \
 		python3-pip \
-		gammu=1.40.0-1 \
-		gammu-smsd=1.40.0-1 \
-		libgammu-dev=1.40.0-1 \
+		gammu=1.42.0-8 \
+		gammu-smsd=1.42.0-8 \
+		libgammu-dev=1.42.0-8 \
 		libmariadb-dev \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* 
