@@ -24,7 +24,7 @@ services:
       - "db"
     environment:
       - MYSQL_HOST=db
-      - MYSQL_USERNAME=sms-gateway
+      - MYSQL_USER=sms-gateway
       - MYSQL_PASSWORD=Bpj7hXNCextgnzSWckFybV
       - MYSQL_DATABASE=smsd
       - GAMMU_DEVICE=/dev/phone

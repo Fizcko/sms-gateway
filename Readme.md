@@ -57,7 +57,7 @@ services:
       - "db"
     environment:
       - MYSQL_HOST=db
-      - MYSQL_USERNAME=sms-gateway
+      - MYSQL_USER=sms-gateway
       - MYSQL_PASSWORD=Bpj7hXNCextgnzSWckFybV
       - MYSQL_DATABASE=smsd
       - GAMMU_DEVICE=/dev/phone
@@ -106,7 +106,7 @@ $ docker-compose up -d
     default value   : "localhost"
     description     : Database server address
 
-#### MYSQL_USERNAME
+#### MYSQL_USER
     default value   : "root"
     description     : User name used for connection to a database
 

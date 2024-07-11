@@ -43,13 +43,13 @@ jwt_config = {
 
 # DB config
 mysql_host = os.environ.get("MYSQL_HOST", "localhost")
-mysql_username = os.environ.get("MYSQL_USERNAME", "root")
+mysql_user = os.environ.get("MYSQL_USER", "root")
 mysql_password = os.environ.get("MYSQL_PASSWORD", "toor")
 mysql_database = os.environ.get("MYSQL_DATABASE", "smsd")
 
 database_config = {
     "host": mysql_host,
-    "username": mysql_username,
+    "username": mysql_user,
     "password": mysql_password,
     "database": mysql_database
 }

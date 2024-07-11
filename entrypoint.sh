@@ -21,7 +21,7 @@ PIN = ${GAMMU_PIN}
 Service = sql
 Driver = native_mysql
 Host = ${MYSQL_HOST}
-User = ${MYSQL_USERNAME}
+User = ${MYSQL_USER}
 Password = ${MYSQL_PASSWORD}
 Database = ${MYSQL_DATABASE}
 
