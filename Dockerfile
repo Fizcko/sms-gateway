@@ -1,7 +1,22 @@
-FROM debian:bookworm-slim
+FROM python:3.11-alpine3.20 as base
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV TERM xterm
+RUN apk update \
+	&& apk add --no-cache \
+		gammu=1.42.0-r1 \
+		gammu-libs=1.42.0-r1 \
+		gammu-smsd=1.42.0-r1 \
+		mariadb-dev
+
+RUN python -m pip install -U pip
+
+# Build dependencies 
+FROM base AS dependencies
+COPY src/requirements.txt .
+RUN apk add --no-cache gcc musl-dev python3-dev gammu-dev=1.42.0-r1 cargo \
+    && pip install -r requirements.txt
+
+# Build final image 
+FROM base AS final
 
 WORKDIR /opt/sms_gateway
 
@@ -29,25 +44,11 @@ ENV API_SECURITY "None"
 ENV API_USERNAME "admin"
 ENV API_PASSWORD "admin"
 
-ENV VIRTUAL_ENV=/opt/venv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
-RUN apt-get update \
-	&& apt-get install -y \
-		python3 \
-		python3-pip \
-		python3-venv \
-		gammu=1.42.0-8 \
-		gammu-smsd=1.42.0-8 \
-		libgammu-dev=1.42.0-8 \
-		libmariadb-dev \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/* 
 
 COPY entrypoint.sh /usr/local/bin/
 COPY src/ /opt/sms_gateway/
 
-RUN python3 -m venv $VIRTUAL_ENV \
-	&& pip3 install -r requirements.txt
+COPY --from=dependencies /root/.cache /root/.cache
+RUN pip install -r requirements.txt && rm -rf /root/.cache
 
-CMD ["bash", "/usr/local/bin/entrypoint.sh"]
+CMD ["sh", "/usr/local/bin/entrypoint.sh"]
