@@ -1,4 +1,4 @@
-FROM python:3.11-alpine3.20 as base
+FROM python:3.11-alpine3.20 AS base
 
 RUN apk update \
 	&& apk add --no-cache \
@@ -22,27 +22,27 @@ WORKDIR /opt/sms_gateway
 
 RUN mkdir -p /opt/sms_gateway 
 
-ENV SERVER_IP "0.0.0.0"
-ENV SERVER_PORT "5000"
+ENV SERVER_IP="0.0.0.0"
+ENV SERVER_PORT="5000"
 
-ENV GAMMU_SMSD_CONF "/etc/gammu-smsdrc"
-ENV GAMMU_DEVICE "/dev/ttyUSB0"
-ENV GAMMU_DEVICE_CONNECTION "at"
-ENV GAMMU_PIN "1234"
-ENV GAMMU_DEBUG_LEVEL "0"
+ENV GAMMU_SMSD_CONF="/etc/gammu-smsdrc"
+ENV GAMMU_DEVICE="/dev/ttyUSB0"
+ENV GAMMU_DEVICE_CONNECTION="at"
+ENV GAMMU_PIN="1234"
+ENV GAMMU_DEBUG_LEVEL="0"
 
-ENV MYSQL_HOST "localhost"
-ENV MYSQL_USER "root"
-ENV MYSQL_PASSWORD "toor"
-ENV MYSQL_DATABASE "smsd"
+ENV MYSQL_HOST="localhost"
+ENV MYSQL_USER="root"
+ENV MYSQL_PASSWORD="toor"
+ENV MYSQL_DATABASE="smsd"
 
-ENV JWT_SECRET "Change-this-secret-phrase"
-ENV JWT_ALGORITHM "HS256"
-ENV JWT_ACCESS_TOKEN_EXPIRES "900"
+ENV JWT_SECRET="Change-this-secret-phrase"
+ENV JWT_ALGORITHM="HS256"
+ENV JWT_ACCESS_TOKEN_EXPIRES="900"
 
-ENV API_SECURITY "None"
-ENV API_USERNAME "admin"
-ENV API_PASSWORD "admin"
+ENV API_SECURITY="None"
+ENV API_USERNAME="admin"
+ENV API_PASSWORD="admin"
 
 
 COPY entrypoint.sh /usr/local/bin/
