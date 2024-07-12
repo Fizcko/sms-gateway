@@ -30,11 +30,12 @@ Create a folder into the host for persistant data (SQL data)
     $ mkdir -p /opt/mariadb
 
 Create `docker-complose.yml` file then modify or add environment variables if necessary
+
 ```
-version: '3.3'
+version: '3'
 services:
   db:
-    image: mariadb:10.5
+    image: mariadb:11.4-ubi
     container_name: sms-gateway_db
     restart: always
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
@@ -45,6 +46,12 @@ services:
       - MYSQL_USER=sms-gateway
       - MYSQL_PASSWORD=Bpj7hXNCextgnzSWckFybV
       - MYSQL_DATABASE=smsd
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 15s
+      interval: 15s
+      timeout: 5s
+      retries: 5
   backend:
     image: fizcko/sms-gateway:latest
     container_name: sms-gateway_server
@@ -54,7 +61,8 @@ services:
     devices:
       - "/dev/ttyUSB2:/dev/phone"
     depends_on:
-      - "db"
+      db:
+        condition: service_healthy
     environment:
       - MYSQL_HOST=db
       - MYSQL_USER=sms-gateway
