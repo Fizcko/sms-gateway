@@ -4,3 +4,4 @@ gammu-smsdrc-win
 mysql.sql
 syslog
 Pipfile
+__pycache__

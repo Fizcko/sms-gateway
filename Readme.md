@@ -38,7 +38,7 @@ services:
     image: mariadb:11.4-ubi
     container_name: sms-gateway_db
     restart: always
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    command: --wait_timeout=28800 --interactive_timeout=28800
     volumes:
       - /opt/mariadb:/var/lib/mysql
     environment:

@@ -12,8 +12,21 @@ if not database_exists(mysql_uri):
 engine = create_engine(mysql_uri, pool_recycle=3600, pool_pre_ping=True)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
+from contextlib import contextmanager
+
+@contextmanager
+def get_session():
+    session = db_session()
+    try:
+        yield session
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
 Base = declarative_base()
-Base.query = db_session.query_property()
 
 def init_db():
     import database.models

@@ -2,7 +2,7 @@ from flask import request
 from flask_restx import Resource, reqparse
 from flask_jwt_extended import ( jwt_required )
 from database.models import outbox
-from database.instance import db_session
+from database.instance import get_session
 from server.instance import server
 from math import ceil
 from models.outbox import outbox_item, outbox_items
@@ -36,26 +36,27 @@ class Outbox(Resource):
         per_page = int(request.args.get('per_page')) if request.args.get('per_page') else 50
         page = int(request.args.get('page')) if request.args.get('page') else 1
 
-        query = db_session.query(outbox)
-        query = query.filter()
+        with get_session() as session:
+            query = session.query(outbox)
+            query = query.filter()
 
-        if(destination):
-            query = query.filter(outbox.SendingDateTime < before)
-        if(destination):
-            query = query.filter(outbox.SendingDateTime > after)
-        if(destination):
-            query = query.filter(outbox.DestinationNumber == destination)
-        total_records = query.count()
-        total_pages = ceil(total_records/per_page)
-        if(per_page):
-            query = query.limit(per_page)
-        if(page):
-            query = query.offset((page-1)*per_page)
-        
-        records = query.all()
-        results = []
-        for record in records:
-            results.append(record.as_json())
+            if(destination):
+                query = query.filter(outbox.SendingDateTime < before)
+            if(destination):
+                query = query.filter(outbox.SendingDateTime > after)
+            if(destination):
+                query = query.filter(outbox.DestinationNumber == destination)
+            total_records = query.count()
+            total_pages = ceil(total_records/per_page)
+            if(per_page):
+                query = query.limit(per_page)
+            if(page):
+                query = query.offset((page-1)*per_page)
+            
+            records = query.all()
+            results = []
+            for record in records:
+                results.append(record.as_json())
 
         return {
             'page': page,
@@ -73,11 +74,12 @@ class OutboxID(Resource):
     @api.response(200, 'Success', outbox_item)
     def get(self, id: int):
         '''   Get a SMS located in the outbox by his ID'''
-        sms = outbox.query.filter_by(ID=id).first()
-        if(sms):
-            return sms.as_json(), 200
-        else:
-            return {'message': 'SMS not found'}, 404
+        with get_session() as session:
+            sms = session.get(outbox, {"ID": id})
+            if(sms):
+                return sms.as_json(), 200
+            else:
+                return {'message': 'SMS not found'}, 404
 
     @ns.doc(params={'id': 'ID of a SMS to delete'})
     @ns.doc(description='Delete a SMS located in the outbox')
@@ -86,8 +88,9 @@ class OutboxID(Resource):
     @required_basicAuth(environment_config["require_basic"])
     def delete(self, id: int):
         '''   Delete a SMS located in the outbox'''
-        sms = outbox.query.filter_by(ID=id).first()
-        if(sms):
-            db_session.delete(sms)
-            db_session.commit()
+        with get_session() as session:
+            sms = session.get(outbox, {"ID": id})
+            if(sms):
+                session.delete(sms)
+
         return {'results': 'ok'}, 204
