@@ -94,3 +94,16 @@ class InboxID(Resource):
                 session.delete(sms)
         
         return {'results': 'ok'}, 204
+
+@ns.route('/v1/inbox/all')
+class InboxALL(Resource):
+    @ns.doc(description='Delete all SMS located in the inbox')
+    @ns.response(204, 'Success')
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
+    def delete(self):
+        '''   Delete all SMS located in the inbox'''
+        with get_session() as session:
+            sms = session.query(inbox).delete()
+
+        return {'results': 'ok'}, 204

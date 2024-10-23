@@ -94,3 +94,16 @@ class OutboxID(Resource):
                 session.delete(sms)
 
         return {'results': 'ok'}, 204
+
+@ns.route('/v1/outbox/all')
+class OutboxALL(Resource):
+    @ns.doc(description='Delete all SMS located in the outbox')
+    @ns.response(204, 'Success')
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
+    def delete(self):
+        '''   Delete all SMS located in the outbox'''
+        with get_session() as session:
+            sms = session.query(outbox).delete()
+
+        return {'results': 'ok'}, 204

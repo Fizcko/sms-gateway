@@ -94,3 +94,16 @@ class SendItemsID(Resource):
                 session.delete(sms)
 
         return {'results': 'ok'}, 204
+
+@ns.route('/v1/sentitems/all')
+class SendItemsALL(Resource):
+    @ns.doc(description='Delete all SMS located in the send items')
+    @ns.response(204, 'Success')
+    @required_bearerAuth(environment_config["require_bearer"])
+    @required_basicAuth(environment_config["require_basic"])
+    def delete(self):
+        '''   Delete all SMS located in the send items'''
+        with get_session() as session:
+            sms = session.query(sentitems).delete()
+
+        return {'results': 'ok'}, 204
