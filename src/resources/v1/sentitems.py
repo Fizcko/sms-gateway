@@ -41,9 +41,9 @@ class SendItems(Resource):
             query = query.filter()
 
             if(before):
-                query = query.filter(sentitems.ReceivingDateTime < before)
+                query = query.filter(sentitems.SendingDateTime < before)
             if(after):
-                query = query.filter(sentitems.ReceivingDateTime > after)
+                query = query.filter(sentitems.SendingDateTime > after)
             if(destination):
                 query = query.filter(sentitems.DestinationNumber == destination)
             total_records = query.count()
