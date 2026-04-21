@@ -7,4 +7,4 @@ SQLAlchemy==2.0.31
 SQLAlchemy-Utils==0.41.2
 python-gammu==3.2.4
 pymysql==1.1.1
-python-dotenv==1.0.1
+python-dotenv==1.2.2
