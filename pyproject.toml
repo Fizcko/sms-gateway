@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sms-gateway"
+version = "3.0.0"
+description = "REST API to send and receive SMS with gammu-smsd"
+requires-python = ">=3.14"
+dependencies = [
+    "alembic==1.20.1",
+    "fastapi==0.162.0",
+    "httpx==0.28.1",
+    "pydantic==2.14.2",
+    "pydantic-settings==2.16.2",
+    "PyJWT==2.15.1",
+    "PyMySQL==1.2.3",
+    "python-dotenv==1.2.4",
+    # Must stay built from source against the system libGammu (pip --no-binary):
+    # the PyPI wheels have no SQL SMSD service.
+    # See docs/decisions/0001-build-gammu-from-source.md.
+    "python-gammu==3.5.1",
+    "SQLAlchemy==2.1.6",
+    "uvicorn==0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2==2.16.0",
+    "mypy==2.4.1",
+    "pytest==9.2.0",
+    "ruff==0.17.3",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+# Alembic reads these directories from disk, they are not imported.
+"*" = ["*.mako"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+markers = [
+    "integration: needs a MariaDB server (TEST_MYSQL_HOST)",
+    "gammu: needs the gammu-smsd binary and python-gammu built with SQL support",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+src = ["src", "."]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+# Gammu column names are capitalised, which this rule mistakes for constants.
+ignore = ["SIM300"]
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
+python_version = "3.14"
+mypy_path = "src:."
+explicit_package_bases = true
+namespace_packages = true
+
+[[tool.mypy.overrides]]
+module = ["gammu", "gammu.*", "pymysql.*"]
+ignore_missing_imports = true

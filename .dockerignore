@@ -1,0 +1,5 @@
+.git
+.env
+docs
+screenshots
+**/__pycache__

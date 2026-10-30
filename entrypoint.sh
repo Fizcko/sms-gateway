@@ -1,13 +1,11 @@
-#!/bin/bash
+#!/bin/sh
+set -e
 
-# Define variables
-ROOT_PATH="/opt/sms_gateway"
+cd /opt/sms_gateway
 
-# Go into ROOT_PATH
-cd $ROOT_PATH
-
-# Create config files
-cat > $GAMMU_SMSD_CONF <<EOL
+# The configuration holds the database password
+umask 077
+cat > "$GAMMU_SMSD_CONF" <<EOL
 # Configuration file for Gammu SMS Daemon
 
 # Gammu library configuration, see gammurc(5)
@@ -29,9 +27,11 @@ logfile = /dev/stdout
 debuglevel = ${GAMMU_DEBUG_LEVEL}
 
 EOL
+umask 022
 
-# Delay start gammu-smsd
-sleep 5s && /usr/bin/gammu-smsd --pid=/var/run/gammu-smsd.pid --config $GAMMU_SMSD_CONF --daemon &
+# gammu-smsd refuses a database that is not at its schema version
+python3 -m sms_gateway.db.migrate
 
-# Start backend
-python3 ./main.py
+/usr/bin/gammu-smsd --pid=/var/run/gammu-smsd.pid --config "$GAMMU_SMSD_CONF" --daemon
+
+exec python3 -m sms_gateway

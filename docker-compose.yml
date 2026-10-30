@@ -1,4 +1,3 @@
-version: '3'
 services:
   db:
     image: mariadb:11.4-ubi
@@ -8,9 +7,9 @@ services:
     volumes:
       - /opt/mariadb:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=UP5yeFxRcvtMBzjdfNmT6p
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?set it in .env}
       - MYSQL_USER=sms-gateway
-      - MYSQL_PASSWORD=Bpj7hXNCextgnzSWckFybV
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:?set it in .env}
       - MYSQL_DATABASE=smsd
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
@@ -20,24 +19,33 @@ services:
       retries: 5
   backend:
     image: fizcko/sms-gateway:latest
+    build: .
     container_name: sms-gateway_server
     restart: always
     ports:
       - 5000:5000
     devices:
-      - "/dev/ttyUSB2:/dev/phone"
+      - "${MODEM_DEVICE:-/dev/ttyUSB2}:/dev/phone"
     depends_on:
       db:
         condition: service_healthy
     environment:
       - MYSQL_HOST=db
       - MYSQL_USER=sms-gateway
-      - MYSQL_PASSWORD=Bpj7hXNCextgnzSWckFybV
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:?set it in .env}
       - MYSQL_DATABASE=smsd
       - GAMMU_DEVICE=/dev/phone
+      - GAMMU_PIN=${GAMMU_PIN:-1234}
+      - API_SECURITY=${API_SECURITY:-None}
+      - API_USERNAME=${API_USERNAME:-}
+      - API_PASSWORD=${API_PASSWORD:-}
+      - JWT_SECRET=${JWT_SECRET:-}
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET:-}
+      - RETENTION_DAYS=${RETENTION_DAYS:-}
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5000/healthz || exit 1"]
-      start_period: 10s
+      start_period: 90s
       interval: 30s
       timeout: 10s
       retries: 3
